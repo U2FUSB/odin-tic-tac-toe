@@ -42,32 +42,55 @@ const Gameboard = (function () {
 
 const Display = (function () {
     function printGameboard() {
+        // console.clear();
         console.log(Gameboard.getBoard());
     }
     return { printGameboard };
 })();
 
-function createPlayer(name) {
-    let wins = 0;
-    return {
-        name,
-        getWins: function () {
-            return wins;
-        },
-        increaseWins: function () {
-            wins++;
-        },
-    };
-}
-
 const Gameflow = (function () {
-    const player1 = createPlayer("Josh");
-    const player2 = createPlayer("Joshephine");
+    function createPlayer(name, mark) {
+        let wins = 0;
+        return {
+            getName: function () {
+                return name;
+            },
+            getMark: function () {
+                return mark;
+            },
+            getWins: function () {
+                return wins;
+            },
+            increaseWins: function () {
+                wins++;
+            },
+        };
+    }
+    // Let players choose names and marks
+    const player1 = createPlayer("Josh", "X");
+    const player2 = createPlayer("Joshephine", "Y");
+    //TODO check if player2 has chosen the same symbol
+    let currentPlayer = player1;
+    function changeCurrentPlayer() {
+        if (currentPlayer == player1) {
+            currentPlayer = player2;
+        }
+        if (currentPlayer == player2) {
+            currentPlayer = player1;
+        }
+    }
+    function runGame() {
+        do {
+            Display.printGameboard();
+            Gameboard.setCell(0, currentPlayer.getMark());
+            Gameboard.setCell(1, currentPlayer.getMark());
+            Gameboard.setCell(2, currentPlayer.getMark());
+            Display.printGameboard();
+            changeCurrentPlayer();
+        } while (!Gameboard.isWinningMark(currentPlayer.mark));
+        console.log("winner is " + currentPlayer.getName());
+    }
+    return { runGame };
 })();
 
-Gameboard.setCell(2, "Y");
-Gameboard.setCell(0, "Y");
-Gameboard.setCell(1, "Y");
-console.log(Gameboard.isWinningMark("Y"));
-Gameboard.getBoard()[3] = 1;
-Display.printGameboard();
+Gameflow.runGame();
