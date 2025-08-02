@@ -48,24 +48,25 @@ const Display = (function () {
     return { printGameboard };
 })();
 
+function createPlayer(name, mark) {
+    let wins = 0;
+    return {
+        getName: function () {
+            return name;
+        },
+        getMark: function () {
+            return mark;
+        },
+        getWins: function () {
+            return wins;
+        },
+        increaseWins: function () {
+            wins++;
+        },
+    };
+}
+
 const Gameflow = (function () {
-    function createPlayer(name, mark) {
-        let wins = 0;
-        return {
-            getName: function () {
-                return name;
-            },
-            getMark: function () {
-                return mark;
-            },
-            getWins: function () {
-                return wins;
-            },
-            increaseWins: function () {
-                wins++;
-            },
-        };
-    }
     // Let players choose names and marks
     const player1 = createPlayer("Josh", "X");
     const player2 = createPlayer("Joshephine", "Y");
@@ -74,8 +75,7 @@ const Gameflow = (function () {
     function changeCurrentPlayer() {
         if (currentPlayer == player1) {
             currentPlayer = player2;
-        }
-        if (currentPlayer == player2) {
+        } else if (currentPlayer == player2) {
             currentPlayer = player1;
         }
     }
@@ -83,11 +83,13 @@ const Gameflow = (function () {
         do {
             Display.printGameboard();
             Gameboard.setCell(0, currentPlayer.getMark());
+            changeCurrentPlayer();
+            Gameboard.setCell(3, currentPlayer.getMark());
+            changeCurrentPlayer();
             Gameboard.setCell(1, currentPlayer.getMark());
             Gameboard.setCell(2, currentPlayer.getMark());
             Display.printGameboard();
-            changeCurrentPlayer();
-        } while (!Gameboard.isWinningMark(currentPlayer.mark));
+        } while (!Gameboard.isWinningMark(currentPlayer.getMark()));
         console.log("winner is " + currentPlayer.getName());
     }
     return { runGame };
