@@ -92,7 +92,7 @@ const Display = (function () {
 })();
 
 const Gameflow = (function () {
-    let player1, player2, isMarkEqual;
+    let player1, player2;
     let currentPlayer, notCurrentPlayer;
     function createPlayer(name, mark) {
         let wins = 0;
@@ -117,6 +117,7 @@ const Gameflow = (function () {
         notCurrentPlayer = buffer;
     }
     function preparePlayers() {
+        let isMarkEqual;
         do {
             player1 = createPlayer(
                 // Display.getInput("player1 Name"),
