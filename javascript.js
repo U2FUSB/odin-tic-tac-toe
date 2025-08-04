@@ -45,7 +45,13 @@ const Display = (function () {
         // console.clear();
         console.log(Gameboard.getBoard());
     }
-    return { printGameboard };
+    function getInput(text) {
+        return prompt(text);
+    }
+    function printMessage(message) {
+        console.log(message);
+    }
+    return { printGameboard, getInput, printMessage };
 })();
 
 function createPlayer(name, mark) {
@@ -67,11 +73,9 @@ function createPlayer(name, mark) {
 }
 
 const Gameflow = (function () {
-    // Let players choose names and marks
-    const player1 = createPlayer("Josh", "X");
-    const player2 = createPlayer("Joshephine", "Y");
-    //TODO check if player2 has chosen the same symbol
-    let currentPlayer = player1;
+    let player1, player2;
+    let isMarkEqual;
+    let currentPlayer;
     function changeCurrentPlayer() {
         if (currentPlayer == player1) {
             currentPlayer = player2;
@@ -79,20 +83,38 @@ const Gameflow = (function () {
             currentPlayer = player1;
         }
     }
-    function runGame() {
+    function prepareGame() {
         do {
+            player1 = createPlayer(
+                // Display.getInput("player1 Name"),
+                // Display.getInput("player1 Mark")
+                "Josh",
+                "X"
+            );
+            player2 = createPlayer(
+                // Display.getInput("player2 Name"),
+                // Display.getInput("player2 Mark")
+                "Janniece",
+                "Y"
+            );
+            currentPlayer = player1;
+            if (player1.getMark() === player2.getMark()) {
+                isMarkEqual = true;
+                Display.printMessage("Marks are equal. Choose different ones");
+            } else {
+                isMarkEqual = false;
+            }
+        } while (isMarkEqual);
+    }
+    function runGame() {
+        /* while (!Gameboard.isWinningMark(currentPlayer.getMark())) */ {
             Display.printGameboard();
             Gameboard.setCell(0, currentPlayer.getMark());
-            changeCurrentPlayer();
-            Gameboard.setCell(3, currentPlayer.getMark());
-            changeCurrentPlayer();
-            Gameboard.setCell(1, currentPlayer.getMark());
-            Gameboard.setCell(2, currentPlayer.getMark());
             Display.printGameboard();
-        } while (!Gameboard.isWinningMark(currentPlayer.getMark()));
+        }
         console.log("winner is " + currentPlayer.getName());
     }
-    return { runGame };
+    return { runGame, prepareGame };
 })();
-
+Gameflow.prepareGame();
 Gameflow.runGame();
