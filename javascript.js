@@ -1,10 +1,20 @@
 const Gameboard = (function () {
     const gameboard = [];
+    const choosableCells = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
     for (let index = 0; index < 9; index++) {
         gameboard.push(undefined);
     }
     function getBoard() {
         return Array.from(gameboard);
+    }
+    function getChoosableCells() {
+        return Array.from(choosableCells);
+    }
+    function removeChoosableCell(chosenCell) {
+        choosableCells.splice(
+            choosableCells.findIndex((cell) => cell == chosenCell),
+            1
+        );
     }
     function setCell(cell, mark) {
         if (
@@ -41,7 +51,13 @@ const Gameboard = (function () {
         });
         return isWinning;
     }
-    return { getBoard, setCell, isWinningMark };
+    return {
+        getBoard,
+        setCell,
+        isWinningMark,
+        getChoosableCells,
+        removeChoosableCell,
+    };
 })();
 
 const Display = (function () {
@@ -62,6 +78,8 @@ const Display = (function () {
 })();
 
 const Gameflow = (function () {
+    let player1, player2, isMarkEqual;
+    let currentPlayer, notCurrentPlayer;
     function createPlayer(name, mark) {
         let wins = 0;
         return {
@@ -79,8 +97,6 @@ const Gameflow = (function () {
             },
         };
     }
-    let player1, player2, isMarkEqual;
-    let currentPlayer, notCurrentPlayer;
     function changeCurrentPlayer() {
         let buffer = currentPlayer;
         currentPlayer = notCurrentPlayer;
@@ -89,16 +105,16 @@ const Gameflow = (function () {
     function prepareGame() {
         do {
             player1 = createPlayer(
-                Display.getInput("player1 Name"),
-                Display.getInput("player1 Mark")
-                // "Josh",
-                // "X"
+                // Display.getInput("player1 Name"),
+                // Display.getInput("player1 Mark")
+                "Josh",
+                "X"
             );
             player2 = createPlayer(
-                Display.getInput("player2 Name"),
-                Display.getInput("player2 Mark")
-                // "Janniece",
-                // "Y"
+                // Display.getInput("player2 Name"),
+                // Display.getInput("player2 Mark")
+                "Janniece",
+                "Y"
             );
             currentPlayer = player1;
             notCurrentPlayer = player2;
@@ -110,23 +126,33 @@ const Gameflow = (function () {
             }
         } while (isMarkEqual);
     }
+    function playRound() {
+        let chosenCell;
+        let cellIsNotIncluded;
+        Display.printGameboard();
+        do {
+            chosenCell = Display.getInput(
+                `${currentPlayer.getName()} Choose number of Cell to set Mark in`
+            );
+            cellIsNotIncluded =
+                !Gameboard.getChoosableCells().includes(chosenCell);
+            if (cellIsNotIncluded) {
+                Display.printMessage(
+                    `Cell ${chosenCell} cannot be chosen. Please choose a different one.`
+                );
+            }
+        } while (cellIsNotIncluded);
+        Gameboard.setCell(chosenCell, currentPlayer.getMark());
+        Gameboard.removeChoosableCell(chosenCell);
+    }
     function runGame() {
         while (!Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
-            Display.printGameboard();
-            // Gameboard.setCell(0, player1.getMark());
-            // Gameboard.setCell(1, player1.getMark());
-            // Gameboard.setCell(2, player1.getMark());
-            // changeCurrentPlayer();
-            // Gameboard.setCell(2, player1.getMark());
-            // changeCurrentPlayer();
-            Gameboard.setCell(
-                Display.getInput("Choose number of Cell to set Mark to"),
-                currentPlayer.getMark()
-            );
+            playRound();
             changeCurrentPlayer();
         }
         Display.printGameboard();
         Display.printMessage("winner is " + notCurrentPlayer.getName());
+        // consider ending state, when no one wins 
     }
     return { runGame, prepareGame };
 })();
