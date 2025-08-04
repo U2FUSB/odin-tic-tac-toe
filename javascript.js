@@ -1,9 +1,10 @@
 const Gameboard = (function () {
     const gameboard = [];
-    const choosableCells = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
     for (let index = 0; index < 9; index++) {
         gameboard.push(undefined);
     }
+    const choosableCells = getBoard().map((cell, index) => index.toString());
+
     function getBoard() {
         return Array.from(gameboard);
     }
@@ -152,7 +153,7 @@ const Gameflow = (function () {
         }
         Display.printGameboard();
         Display.printMessage("winner is " + notCurrentPlayer.getName());
-        // consider ending state, when no one wins 
+        // consider ending state, when no one wins (and maybe when pressing "END GAME" somehow)
     }
     return { runGame, prepareGame };
 })();
