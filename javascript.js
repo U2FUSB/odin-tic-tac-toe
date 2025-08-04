@@ -145,17 +145,47 @@ const Gameflow = (function () {
         } while (cellIsNotIncluded);
         Gameboard.setCell(chosenCell, currentPlayer.getMark());
         Gameboard.removeChoosableCell(chosenCell);
+
+        // to test for winning scenario
+        // Gameboard.setCell(0, player1.getMark());
+        // Gameboard.setCell(1, player1.getMark());
+        // Gameboard.setCell(2, player1.getMark());
+
+        // To test for stalemate scenario
+        // Gameboard.setCell(0, player1.getMark());
+        // Gameboard.setCell(1, player1.getMark());
+        // Gameboard.setCell(5, player1.getMark());
+        // Gameboard.setCell(6, player1.getMark());
+        // Gameboard.setCell(2, player2.getMark());
+        // Gameboard.setCell(3, player2.getMark());
+        // Gameboard.setCell(4, player2.getMark());
+        // Gameboard.setCell(7, player2.getMark());
+        // Gameboard.setCell(8, player2.getMark());
     }
     function runGame() {
-        while (!Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
+        while (!gameEnd()[0]) {
             playRound();
             changeCurrentPlayer();
         }
         Display.printGameboard();
-        Display.printMessage("winner is " + notCurrentPlayer.getName());
-        // consider ending state, when no one wins (and maybe when pressing "END GAME" somehow)
+        if (gameEnd()[1] === 1) {
+            Display.printMessage("winner is " + notCurrentPlayer.getName());
+        }
+        if (gameEnd()[1] === 2) {
+            Display.printMessage("Game ends in a stalemate");
+        }
+    }
+    function gameEnd() {
+        let endState = [false, 0];
+        if (Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
+            endState = [true, 1];
+        } else if (!Gameboard.getBoard().some((cell) => cell == undefined)) {
+            endState = [true, 2];
+        }
+        return endState;
     }
     return { runGame, prepareGame };
 })();
+
 Gameflow.prepareGame();
 // Gameflow.runGame();
