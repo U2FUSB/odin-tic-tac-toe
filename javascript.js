@@ -1,12 +1,24 @@
 const Gameboard = (function () {
     const gameboard = [];
-    for (let index = 0; index < 9; index++) {
-        gameboard.push(undefined);
-    }
-    const choosableCells = getBoard().map((cell, index) => index.toString());
+    let choosableCells;
+    populateBoard();
+    populateChoosableCells();
 
+    function populateBoard() {
+        for (let index = 0; index < 9; index++) {
+            gameboard.push(undefined);
+        }
+    }
+    function populateChoosableCells() {
+        choosableCells = getBoard().map((cell, index) => index.toString());
+    }
     function getBoard() {
         return Array.from(gameboard);
+    }
+    function resetBoard() {
+        gameboard.splice(0, getBoard().length);
+        populateBoard();
+        populateChoosableCells();
     }
     function getChoosableCells() {
         return Array.from(choosableCells);
@@ -54,6 +66,7 @@ const Gameboard = (function () {
     }
     return {
         getBoard,
+        resetBoard,
         setCell,
         isWinningMark,
         getChoosableCells,
@@ -103,7 +116,7 @@ const Gameflow = (function () {
         currentPlayer = notCurrentPlayer;
         notCurrentPlayer = buffer;
     }
-    function prepareGame() {
+    function preparePlayers() {
         do {
             player1 = createPlayer(
                 // Display.getInput("player1 Name"),
@@ -117,8 +130,6 @@ const Gameflow = (function () {
                 "Janniece",
                 "Y"
             );
-            currentPlayer = player1;
-            notCurrentPlayer = player2;
             if (player1.getMark() === player2.getMark()) {
                 isMarkEqual = true;
                 Display.printMessage("Marks are equal. Choose different ones");
@@ -126,6 +137,11 @@ const Gameflow = (function () {
                 isMarkEqual = false;
             }
         } while (isMarkEqual);
+    }
+    function prepareGame() {
+        currentPlayer = player1;
+        notCurrentPlayer = player2;
+        Gameboard.resetBoard();
     }
     function playRound() {
         let chosenCell;
@@ -143,13 +159,13 @@ const Gameflow = (function () {
                 );
             }
         } while (cellIsNotIncluded);
-        Gameboard.setCell(chosenCell, currentPlayer.getMark());
-        Gameboard.removeChoosableCell(chosenCell);
+        // Gameboard.setCell(chosenCell, currentPlayer.getMark());
+        // Gameboard.removeChoosableCell(chosenCell);
 
         // to test for winning scenario
-        // Gameboard.setCell(0, player1.getMark());
-        // Gameboard.setCell(1, player1.getMark());
-        // Gameboard.setCell(2, player1.getMark());
+        Gameboard.setCell(0, player1.getMark());
+        Gameboard.setCell(1, player1.getMark());
+        Gameboard.setCell(2, player1.getMark());
 
         // To test for stalemate scenario
         // Gameboard.setCell(0, player1.getMark());
@@ -163,17 +179,24 @@ const Gameflow = (function () {
         // Gameboard.setCell(8, player2.getMark());
     }
     function runGame() {
+        prepareGame();
         while (!gameEnd()[0]) {
             playRound();
             changeCurrentPlayer();
         }
         Display.printGameboard();
         if (gameEnd()[1] === 1) {
+            notCurrentPlayer.increaseWins();
             Display.printMessage("winner is " + notCurrentPlayer.getName());
         }
         if (gameEnd()[1] === 2) {
             Display.printMessage("Game ends in a stalemate");
         }
+        Display.printMessage("");
+        Display.printMessage("Current points:");
+        Display.printMessage(`${player1.getName()}: ${player1.getWins()}`);
+        Display.printMessage(`${player2.getName()}: ${player2.getWins()}`);
+        Gameboard.resetBoard();
     }
     function gameEnd() {
         let endState = [false, 0];
@@ -184,8 +207,7 @@ const Gameflow = (function () {
         }
         return endState;
     }
-    return { runGame, prepareGame };
+    return { runGame, prepareGame, preparePlayers };
 })();
-
-Gameflow.prepareGame();
-// Gameflow.runGame();
+Gameflow.preparePlayers();
+Gameflow.runGame();
