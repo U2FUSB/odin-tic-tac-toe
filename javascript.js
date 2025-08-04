@@ -1,13 +1,17 @@
 const Gameboard = (function () {
     const gameboard = [];
     for (let index = 0; index < 9; index++) {
-        gameboard.push(null);
+        gameboard.push(undefined);
     }
     function getBoard() {
         return Array.from(gameboard);
     }
     function setCell(cell, mark) {
-        if (cell >= 0 && cell <= gameboard.length - 1) {
+        if (
+            cell >= 0 &&
+            cell <= gameboard.length - 1 &&
+            typeof gameboard[cell] == "undefined"
+        ) {
             gameboard[cell] = mark;
         }
     }
@@ -42,8 +46,11 @@ const Gameboard = (function () {
 
 const Display = (function () {
     function printGameboard() {
-        // console.clear();
-        console.log(Gameboard.getBoard());
+        console.clear();
+        console.log(Gameboard.getBoard().slice(0, 3));
+        console.log(Gameboard.getBoard().slice(3, 6));
+        console.log(Gameboard.getBoard().slice(6, 9));
+        console.log("");
     }
     function getInput(text) {
         return prompt(text);
@@ -54,25 +61,24 @@ const Display = (function () {
     return { printGameboard, getInput, printMessage };
 })();
 
-function createPlayer(name, mark) {
-    let wins = 0;
-    return {
-        getName: function () {
-            return name;
-        },
-        getMark: function () {
-            return mark;
-        },
-        getWins: function () {
-            return wins;
-        },
-        increaseWins: function () {
-            wins++;
-        },
-    };
-}
-
 const Gameflow = (function () {
+    function createPlayer(name, mark) {
+        let wins = 0;
+        return {
+            getName: function () {
+                return name;
+            },
+            getMark: function () {
+                return mark;
+            },
+            getWins: function () {
+                return wins;
+            },
+            increaseWins: function () {
+                wins++;
+            },
+        };
+    }
     let player1, player2, isMarkEqual;
     let currentPlayer, notCurrentPlayer;
     function changeCurrentPlayer() {
@@ -83,16 +89,16 @@ const Gameflow = (function () {
     function prepareGame() {
         do {
             player1 = createPlayer(
-                // Display.getInput("player1 Name"),
-                // Display.getInput("player1 Mark")
-                "Josh",
-                "X"
+                Display.getInput("player1 Name"),
+                Display.getInput("player1 Mark")
+                // "Josh",
+                // "X"
             );
             player2 = createPlayer(
-                // Display.getInput("player2 Name"),
-                // Display.getInput("player2 Mark")
-                "Janniece",
-                "Y"
+                Display.getInput("player2 Name"),
+                Display.getInput("player2 Mark")
+                // "Janniece",
+                // "Y"
             );
             currentPlayer = player1;
             notCurrentPlayer = player2;
@@ -107,15 +113,22 @@ const Gameflow = (function () {
     function runGame() {
         while (!Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
             Display.printGameboard();
-            Gameboard.setCell(0, currentPlayer.getMark());
-            Gameboard.setCell(1, currentPlayer.getMark());
-            Gameboard.setCell(2, currentPlayer.getMark());
-            Display.printGameboard();
+            // Gameboard.setCell(0, player1.getMark());
+            // Gameboard.setCell(1, player1.getMark());
+            // Gameboard.setCell(2, player1.getMark());
+            // changeCurrentPlayer();
+            // Gameboard.setCell(2, player1.getMark());
+            // changeCurrentPlayer();
+            Gameboard.setCell(
+                Display.getInput("Choose number of Cell to set Mark to"),
+                currentPlayer.getMark()
+            );
             changeCurrentPlayer();
         }
-        console.log("winner is " + currentPlayer.getName());
+        Display.printGameboard();
+        Display.printMessage("winner is " + notCurrentPlayer.getName());
     }
     return { runGame, prepareGame };
 })();
 Gameflow.prepareGame();
-Gameflow.runGame();
+// Gameflow.runGame();
