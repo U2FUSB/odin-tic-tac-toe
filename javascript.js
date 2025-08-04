@@ -73,15 +73,12 @@ function createPlayer(name, mark) {
 }
 
 const Gameflow = (function () {
-    let player1, player2;
-    let isMarkEqual;
-    let currentPlayer;
+    let player1, player2, isMarkEqual;
+    let currentPlayer, notCurrentPlayer;
     function changeCurrentPlayer() {
-        if (currentPlayer == player1) {
-            currentPlayer = player2;
-        } else if (currentPlayer == player2) {
-            currentPlayer = player1;
-        }
+        let buffer = currentPlayer;
+        currentPlayer = notCurrentPlayer;
+        notCurrentPlayer = buffer;
     }
     function prepareGame() {
         do {
@@ -98,6 +95,7 @@ const Gameflow = (function () {
                 "Y"
             );
             currentPlayer = player1;
+            notCurrentPlayer = player2;
             if (player1.getMark() === player2.getMark()) {
                 isMarkEqual = true;
                 Display.printMessage("Marks are equal. Choose different ones");
@@ -107,10 +105,13 @@ const Gameflow = (function () {
         } while (isMarkEqual);
     }
     function runGame() {
-        /* while (!Gameboard.isWinningMark(currentPlayer.getMark())) */ {
+        while (!Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
             Display.printGameboard();
             Gameboard.setCell(0, currentPlayer.getMark());
+            Gameboard.setCell(1, currentPlayer.getMark());
+            Gameboard.setCell(2, currentPlayer.getMark());
             Display.printGameboard();
+            changeCurrentPlayer();
         }
         console.log("winner is " + currentPlayer.getName());
     }
