@@ -36,6 +36,7 @@ const Gameboard = (function () {
             typeof gameboard[cell] == "undefined"
         ) {
             gameboard[cell] = mark;
+            removeChoosableCell(cell);
         }
     }
     function isWinningMark(mark) {
@@ -70,7 +71,6 @@ const Gameboard = (function () {
         setCell,
         isWinningMark,
         getChoosableCells,
-        removeChoosableCell,
     };
 })();
 
@@ -148,36 +148,35 @@ const Gameflow = (function () {
         let chosenCell;
         let cellIsNotIncluded;
         Display.printGameboard();
-        do {
-            chosenCell = Display.getInput(
-                `${currentPlayer.getName()} Choose number of Cell to set Mark in`
-            );
-            cellIsNotIncluded =
-                !Gameboard.getChoosableCells().includes(chosenCell);
-            if (cellIsNotIncluded) {
-                Display.printMessage(
-                    `Cell ${chosenCell} cannot be chosen. Please choose a different one.`
-                );
-            }
-        } while (cellIsNotIncluded);
+        // do {
+        //     chosenCell = Display.getInput(
+        //         `${currentPlayer.getName()} Choose number of Cell to set Mark in`
+        //     );
+        //     cellIsNotIncluded =
+        //         !Gameboard.getChoosableCells().includes(chosenCell);
+        //     if (cellIsNotIncluded) {
+        //         Display.printMessage(
+        //             `Cell ${chosenCell} cannot be chosen. Please choose a different one.`
+        //         );
+        //     }
+        // } while (cellIsNotIncluded);
         // Gameboard.setCell(chosenCell, currentPlayer.getMark());
-        // Gameboard.removeChoosableCell(chosenCell);
 
         // to test for winning scenario
-        Gameboard.setCell(0, player1.getMark());
-        Gameboard.setCell(1, player1.getMark());
-        Gameboard.setCell(2, player1.getMark());
-
-        // To test for stalemate scenario
         // Gameboard.setCell(0, player1.getMark());
         // Gameboard.setCell(1, player1.getMark());
-        // Gameboard.setCell(5, player1.getMark());
-        // Gameboard.setCell(6, player1.getMark());
-        // Gameboard.setCell(2, player2.getMark());
-        // Gameboard.setCell(3, player2.getMark());
-        // Gameboard.setCell(4, player2.getMark());
-        // Gameboard.setCell(7, player2.getMark());
-        // Gameboard.setCell(8, player2.getMark());
+        // Gameboard.setCell(2, player1.getMark());
+
+        // To test for stalemate scenario
+        Gameboard.setCell(0, player1.getMark());
+        Gameboard.setCell(1, player1.getMark());
+        Gameboard.setCell(5, player1.getMark());
+        Gameboard.setCell(6, player1.getMark());
+        Gameboard.setCell(2, player2.getMark());
+        Gameboard.setCell(3, player2.getMark());
+        Gameboard.setCell(4, player2.getMark());
+        Gameboard.setCell(7, player2.getMark());
+        Gameboard.setCell(8, player2.getMark());
     }
     function runGame() {
         prepareGame();
