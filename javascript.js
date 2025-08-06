@@ -75,6 +75,7 @@ const Gameboard = (function () {
 })();
 
 const Display = (function () {
+    
     function printGameboard() {
         console.clear();
         console.log(Gameboard.getBoard().slice(0, 3));

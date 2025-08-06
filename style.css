@@ -1,0 +1,17 @@
+:root {
+    --cell-size: 50px;
+    --border-size: 1px;
+    --grid-size: calc(var(--cell-size) * 3);
+}
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: var(--grid-size);
+    height: var(--grid-size);
+}
+.game-grid > div {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background-color: green;
+    border: black solid var(--border-size);
+}
