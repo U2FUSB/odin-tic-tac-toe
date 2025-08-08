@@ -87,7 +87,7 @@ const Display = (function () {
     });
 
     function prepareEventListeners(params) {
-        startGameButton.addEventListener("click", Gameflow.startGame);
+        startGameButton.addEventListener("click", Gameflow.prepareGame);
         gameGrid.addEventListener("click", Gameflow.playRound);
     }
 
@@ -164,10 +164,11 @@ const Gameflow = (function () {
         currentPlayer = player1;
         notCurrentPlayer = player2;
         Gameboard.resetBoard();
+        Display.printMessage(`${currentPlayer.getName()}, make your choice`);
     }
     function playRound(event) {
         const chosenCell = Display.getCellFromEvent(event);
-        Display.printGameboard();
+        let gamestate;
 
         const cellIsNotIncluded =
             !Gameboard.getChoosableCells().includes(chosenCell);
@@ -177,12 +178,22 @@ const Gameflow = (function () {
             );
         } else {
             Gameboard.setCell(chosenCell, currentPlayer.getMark());
-
-            Display.printGameboard();
+            gamestate = getGameState();
             changeCurrentPlayer();
-            Display.printMessage(
-                `${currentPlayer.getName()}, it's you turn now. Make your choice`
-            );
+            if (gamestate[1] === 0) {
+                Display.printGameboard();
+                Display.printMessage(
+                    `${currentPlayer.getName()}, it's you turn now. Make your choice`
+                );
+                Display.printMessage(`${endState}`); //for some weird reason this does not display. If run before the prior Display.printMessage, that one does not display either.
+            }
+            if (gamestate[1] === 1) {
+                notCurrentPlayer.increaseWins();
+                Display.printGameboard();
+                Display.printMessage(
+                    `${notCurrentPlayer.getName()} wins this round`
+                );
+            }
         }
 
         // to test for winning scenario
@@ -201,28 +212,7 @@ const Gameflow = (function () {
         // Gameboard.setCell(7, player2.getMark());
         // Gameboard.setCell(8, player2.getMark());
     }
-    function startGame() {
-        prepareGame();
-        Display.printMessage(`${currentPlayer.getName()}, make your choice`);
-        // while (!gameEnd()[0]) {
-        //     playRound();
-        //     changeCurrentPlayer();
-        // }
-        // Display.printGameboard();
-        // if (gameEnd()[1] === 1) {
-        //     notCurrentPlayer.increaseWins();
-        //     Display.printMessage("winner is " + notCurrentPlayer.getName());
-        // }
-        // if (gameEnd()[1] === 2) {
-        //     Display.printMessage("Game ends in a stalemate");
-        // }
-        // Display.printMessage("");
-        // Display.printMessage("Current points:");
-        // Display.printMessage(`${player1.getName()}: ${player1.getWins()}`);
-        // Display.printMessage(`${player2.getName()}: ${player2.getWins()}`);
-        // Gameboard.resetBoard();
-    }
-    function gameEnd() {
+    function getGameState() {
         let endState = [false, 0];
         if (Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
             endState = [true, 1];
@@ -231,7 +221,7 @@ const Gameflow = (function () {
         }
         return endState;
     }
-    return { startGame, preparePlayers, playRound };
+    return { preparePlayers, playRound, prepareGame };
 })();
 Gameflow.preparePlayers();
 Display.prepareEventListeners();
