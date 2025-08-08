@@ -75,7 +75,22 @@ const Gameboard = (function () {
 })();
 
 const Display = (function () {
-    
+    const startGameButton = document.querySelector("button.start-game");
+    const player1NameButton = document.querySelector("#player1-name");
+    const player1MarkButton = document.querySelector("#player1-mark");
+    const player2NameButton = document.querySelector("#player2-name");
+    const player2MarkButton = document.querySelector("#player2-mark");
+    const gameGrid = document.querySelector(".game-grid");
+
+    Array.from(gameGrid.children).forEach((element, index) => {
+        element.dataset.cell = index;
+    });
+
+    function prepareEventListeners(params) {
+        startGameButton.addEventListener("click", Gameflow.startGame);
+        gameGrid.addEventListener("click", Gameflow.playRound);
+    }
+
     function printGameboard() {
         console.clear();
         console.log(Gameboard.getBoard().slice(0, 3));
@@ -83,13 +98,18 @@ const Display = (function () {
         console.log(Gameboard.getBoard().slice(6, 9));
         console.log("");
     }
-    function getInput(text) {
-        return prompt(text);
+    function getCellFromEvent(event) {
+        return event.target.dataset.cell;
     }
     function printMessage(message) {
         console.log(message);
     }
-    return { printGameboard, getInput, printMessage };
+    return {
+        printGameboard,
+        getCellFromEvent,
+        printMessage,
+        prepareEventListeners,
+    };
 })();
 
 const Gameflow = (function () {
@@ -145,23 +165,25 @@ const Gameflow = (function () {
         notCurrentPlayer = player2;
         Gameboard.resetBoard();
     }
-    function playRound() {
-        let chosenCell;
-        let cellIsNotIncluded;
+    function playRound(event) {
+        const chosenCell = Display.getCellFromEvent(event);
         Display.printGameboard();
-        do {
-            chosenCell = Display.getInput(
-                `${currentPlayer.getName()} Choose number of Cell to set Mark in`
+
+        const cellIsNotIncluded =
+            !Gameboard.getChoosableCells().includes(chosenCell);
+        if (cellIsNotIncluded) {
+            Display.printMessage(
+                `Cell ${chosenCell} cannot be chosen. Please choose a different one.`
             );
-            cellIsNotIncluded =
-                !Gameboard.getChoosableCells().includes(chosenCell);
-            if (cellIsNotIncluded) {
-                Display.printMessage(
-                    `Cell ${chosenCell} cannot be chosen. Please choose a different one.`
-                );
-            }
-        } while (cellIsNotIncluded);
-        Gameboard.setCell(chosenCell, currentPlayer.getMark());
+        } else {
+            Gameboard.setCell(chosenCell, currentPlayer.getMark());
+
+            Display.printGameboard();
+            changeCurrentPlayer();
+            Display.printMessage(
+                `${currentPlayer.getName()}, it's you turn now. Make your choice`
+            );
+        }
 
         // to test for winning scenario
         // Gameboard.setCell(0, player1.getMark());
@@ -179,25 +201,26 @@ const Gameflow = (function () {
         // Gameboard.setCell(7, player2.getMark());
         // Gameboard.setCell(8, player2.getMark());
     }
-    function runGame() {
+    function startGame() {
         prepareGame();
-        while (!gameEnd()[0]) {
-            playRound();
-            changeCurrentPlayer();
-        }
-        Display.printGameboard();
-        if (gameEnd()[1] === 1) {
-            notCurrentPlayer.increaseWins();
-            Display.printMessage("winner is " + notCurrentPlayer.getName());
-        }
-        if (gameEnd()[1] === 2) {
-            Display.printMessage("Game ends in a stalemate");
-        }
-        Display.printMessage("");
-        Display.printMessage("Current points:");
-        Display.printMessage(`${player1.getName()}: ${player1.getWins()}`);
-        Display.printMessage(`${player2.getName()}: ${player2.getWins()}`);
-        Gameboard.resetBoard();
+        Display.printMessage(`${currentPlayer.getName()}, make your choice`);
+        // while (!gameEnd()[0]) {
+        //     playRound();
+        //     changeCurrentPlayer();
+        // }
+        // Display.printGameboard();
+        // if (gameEnd()[1] === 1) {
+        //     notCurrentPlayer.increaseWins();
+        //     Display.printMessage("winner is " + notCurrentPlayer.getName());
+        // }
+        // if (gameEnd()[1] === 2) {
+        //     Display.printMessage("Game ends in a stalemate");
+        // }
+        // Display.printMessage("");
+        // Display.printMessage("Current points:");
+        // Display.printMessage(`${player1.getName()}: ${player1.getWins()}`);
+        // Display.printMessage(`${player2.getName()}: ${player2.getWins()}`);
+        // Gameboard.resetBoard();
     }
     function gameEnd() {
         let endState = [false, 0];
@@ -208,7 +231,7 @@ const Gameflow = (function () {
         }
         return endState;
     }
-    return { runGame, prepareGame, preparePlayers };
+    return { startGame, preparePlayers, playRound };
 })();
 Gameflow.preparePlayers();
-// Gameflow.runGame();
+Display.prepareEventListeners();
