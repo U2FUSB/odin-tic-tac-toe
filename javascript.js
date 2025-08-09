@@ -75,22 +75,37 @@ const Gameboard = (function () {
 })();
 
 const Display = (function () {
+    const playerForm = document.querySelector("form.player-form");
+    const player1NameInput = document.querySelector("#player1-name");
+    const player1MarkInput = document.querySelector("#player1-mark");
+    const player2NameInput = document.querySelector("#player2-name");
+    const player2MarkInput = document.querySelector("#player2-mark");
     const startGameButton = document.querySelector("button.start-game");
-    const player1NameButton = document.querySelector("#player1-name");
-    const player1MarkButton = document.querySelector("#player1-mark");
-    const player2NameButton = document.querySelector("#player2-name");
-    const player2MarkButton = document.querySelector("#player2-mark");
     const gameGrid = document.querySelector(".game-grid");
 
     Array.from(gameGrid.children).forEach((element, index) => {
         element.dataset.cell = index;
     });
 
+    // So I don't have to set the players every time
+    player1NameInput.value = "Josh";
+    player1MarkInput.value = "X";
+    player2NameInput.value = "Janniece";
+    player2MarkInput.value = "Y";
+    
     function prepareEventListeners(params) {
+        playerForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            Gameflow.preparePlayers(
+                player1NameInput.value,
+                player1MarkInput.value,
+                player2NameInput.value,
+                player2MarkInput.value
+            );
+        });
         startGameButton.addEventListener("click", Gameflow.prepareGame);
         gameGrid.addEventListener("click", Gameflow.playRound);
     }
-
     function printGameboard() {
         console.clear();
         console.log(Gameboard.getBoard().slice(0, 3));
@@ -137,28 +152,32 @@ const Gameflow = (function () {
         currentPlayer = notCurrentPlayer;
         notCurrentPlayer = buffer;
     }
-    function preparePlayers() {
-        let isMarkEqual;
-        do {
-            player1 = createPlayer(
-                // Display.getInput("player1 Name"),
-                // Display.getInput("player1 Mark")
-                "Josh",
-                "X"
+    function preparePlayers(
+        player1Name,
+        player1Mark,
+        player2Name,
+        player2Mark
+    ) {
+        if (
+            player1Name === "" ||
+            player1Mark === "" ||
+            player2Name === "" ||
+            player2Mark === ""
+        ) {
+            Display.printMessage(
+                "Can't let names or marks empty. Please choose something."
             );
-            player2 = createPlayer(
-                // Display.getInput("player2 Name"),
-                // Display.getInput("player2 Mark")
-                "Janniece",
-                "Y"
+        } else if (player1Name === player2Name || player1Mark === player2Mark) {
+            Display.printMessage(
+                "Can't choose the same name or mark. Please set different ones."
             );
-            if (player1.getMark() === player2.getMark()) {
-                isMarkEqual = true;
-                Display.printMessage("Marks are equal. Choose different ones");
-            } else {
-                isMarkEqual = false;
-            }
-        } while (isMarkEqual);
+        } else {
+            player1 = createPlayer(player1Name, player1Mark);
+            player2 = createPlayer(player2Name, player2Mark);
+            Display.printMessage(
+                `Players "${player1.getName()}" and "${player2.getName()}" are created`
+            );
+        }
     }
     function prepareGame() {
         currentPlayer = player1;
@@ -168,8 +187,6 @@ const Gameflow = (function () {
     }
     function playRound(event) {
         const chosenCell = Display.getCellFromEvent(event);
-        let gamestate;
-
         const cellIsNotIncluded =
             !Gameboard.getChoosableCells().includes(chosenCell);
         if (cellIsNotIncluded) {
@@ -178,14 +195,13 @@ const Gameflow = (function () {
             );
         } else {
             Gameboard.setCell(chosenCell, currentPlayer.getMark());
-            gamestate = getGameState();
+            const gamestate = getGameState();
             changeCurrentPlayer();
             if (gamestate[1] === 0) {
                 Display.printGameboard();
                 Display.printMessage(
                     `${currentPlayer.getName()}, it's you turn now. Make your choice`
                 );
-                Display.printMessage(`${endState}`); //for some weird reason this does not display. If run before the prior Display.printMessage, that one does not display either.
             }
             if (gamestate[1] === 1) {
                 notCurrentPlayer.increaseWins();
@@ -193,28 +209,28 @@ const Gameflow = (function () {
                 Display.printMessage(
                     `${notCurrentPlayer.getName()} wins this round`
                 );
+                Display.printMessage(
+                    `${player1.getName()}: ${player1.getWins()} Points`
+                );
+                Display.printMessage(
+                    `${player2.getName()}: ${player2.getWins()} Points`
+                );
+            }
+            if (gamestate[1] === 2) {
+                Display.printGameboard();
+                Display.printMessage("This round is a stalemate");
+                Display.printMessage(
+                    `${player1.getName()}: ${player1.getWins()} Points`
+                );
+                Display.printMessage(
+                    `${player2.getName()}: ${player2.getWins()} Points`
+                );
             }
         }
-
-        // to test for winning scenario
-        // Gameboard.setCell(0, player1.getMark());
-        // Gameboard.setCell(1, player1.getMark());
-        // Gameboard.setCell(2, player1.getMark());
-
-        // To test for stalemate scenario
-        // Gameboard.setCell(0, player1.getMark());
-        // Gameboard.setCell(1, player1.getMark());
-        // Gameboard.setCell(5, player1.getMark());
-        // Gameboard.setCell(6, player1.getMark());
-        // Gameboard.setCell(2, player2.getMark());
-        // Gameboard.setCell(3, player2.getMark());
-        // Gameboard.setCell(4, player2.getMark());
-        // Gameboard.setCell(7, player2.getMark());
-        // Gameboard.setCell(8, player2.getMark());
     }
     function getGameState() {
         let endState = [false, 0];
-        if (Gameboard.isWinningMark(notCurrentPlayer.getMark())) {
+        if (Gameboard.isWinningMark(currentPlayer.getMark())) {
             endState = [true, 1];
         } else if (!Gameboard.getBoard().some((cell) => cell == undefined)) {
             endState = [true, 2];
@@ -223,5 +239,4 @@ const Gameflow = (function () {
     }
     return { preparePlayers, playRound, prepareGame };
 })();
-Gameflow.preparePlayers();
 Display.prepareEventListeners();

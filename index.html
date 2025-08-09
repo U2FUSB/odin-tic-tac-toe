@@ -8,14 +8,17 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
-        <label for="player1-name">Name Player 1: </label>
-        <input id="player1-name" type="text" />
-        <label for="player1-mark">Mark Player 1: </label>
-        <input id="player1-mark" type="text" />
-        <label for="player2-name">Name Player 2: </label>
-        <input id="player2-name" type="text" />
-        <label for="player2-mark">Mark Player 2: </label>
-        <input id="player2-mark" type="text" />
+        <form class="player-form">
+            <label for="player1-name">Name Player 1: </label>
+            <input id="player1-name" type="text" placeholder="Josh" />
+            <label for="player1-mark">Mark Player 1: </label>
+            <input id="player1-mark" type="text" placeholder="X" />
+            <label for="player2-name">Name Player 2: </label>
+            <input id="player2-name" type="text" placeholder="Janniece" />
+            <label for="player2-mark">Mark Player 2: </label>
+            <input id="player2-mark" type="text" placeholder="Y" />
+            <button class="set-players" type="submit">Set Players</button>
+        </form>
         <button class="start-game">Start Game</button>
         <div class="game-grid">
             <div></div>
