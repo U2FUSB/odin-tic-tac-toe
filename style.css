@@ -154,6 +154,7 @@ section.end-game {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 1rem;
 }
 section.end-game .game-grid {
     width: calc(var(--grid-size) / var(--end-grid-reducer));
@@ -170,7 +171,7 @@ button.start-game {
     width: var(--start-game-button-width);
     height: calc(var(--start-game-button-width) / 2);
     border-style: solid;
-    margin-top: 7rem;
+    margin-top: 3rem;
 }
 section.message-board {
     background: var(--card-second-color);
