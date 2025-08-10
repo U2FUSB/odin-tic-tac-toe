@@ -252,6 +252,7 @@ const Gameflow = (function () {
                 Display.printMessage(
                     `${notCurrentPlayer.getName()} wins this round`
                 );
+                Display.printMessage("\r\n");
                 Display.printMessage(
                     `${player1.getName()}: ${player1.getWins()} Points`
                 );
@@ -262,6 +263,7 @@ const Gameflow = (function () {
             if (gamestate[1] === 2) {
                 Display.setPage.endGame();
                 Display.printMessage("This round is a stalemate");
+                Display.printMessage("\r\n");
                 Display.printMessage(
                     `${player1.getName()}: ${player1.getWins()} Points`
                 );

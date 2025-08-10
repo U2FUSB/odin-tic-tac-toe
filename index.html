@@ -5,20 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Tic Tac Toe</title>
         <script type="module" src="./javascript.js"></script>
+        <link rel="stylesheet" href="normalize.css" />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
         <section class="prepare-game">
             <form class="player-form">
-                <label for="player1-name">Name Player 1: </label>
-                <input id="player1-name" type="text" placeholder="Josh" />
-                <label for="player1-mark">Mark Player 1: </label>
-                <input id="player1-mark" type="text" placeholder="X" />
-                <label for="player2-name">Name Player 2: </label>
-                <input id="player2-name" type="text" placeholder="Jannice" />
-                <label for="player2-mark">Mark Player 2: </label>
-                <input id="player2-mark" type="text" placeholder="Y" />
-                <button class="set-players" type="submit">Set Players</button>
+                <div>
+                    <h3>Player 1:</h3>
+                    <label for="player1-name">Name: </label>
+                    <input id="player1-name" type="text" placeholder="Josh" />
+                    <label for="player1-mark">Mark: </label>
+                    <input id="player1-mark" type="text" placeholder="X" />
+                </div>
+                <div>
+                    <h3>Player 2:</h3>
+                    <label for="player2-name">Name: </label>
+                    <input
+                        id="player2-name"
+                        type="text"
+                        placeholder="Jannice"
+                    />
+                    <label for="player2-mark">Mark: </label>
+                    <input id="player2-mark" type="text" placeholder="Y" />
+                </div>
+                <button class="set-players" type="submit">Start Game</button>
             </form>
         </section>
         <section class="play-game">
@@ -36,10 +47,13 @@
         </section>
         <section class="end-game">
             <section class="end-game-grid"></section>
-            <button class="start-game">Start New Game</button>
+            <button class="start-game">Start Next Round</button>
         </section>
         <section class="message-board">
+            <h3>Message Board</h3>
+            <hr />
             <p></p>
+            <hr />
         </section>
     </body>
 </html>

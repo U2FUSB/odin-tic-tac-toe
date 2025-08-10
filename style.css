@@ -1,20 +1,195 @@
+* {
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
 :root {
-    --cell-size: 50px;
+    --cell-size: 7rem;
     --border-size: 1px;
+    --border-size-thick: 3px;
+    --button-width: 6rem;
+    --start-game-button-width: calc(var(--button-width) + 5rem);
     --grid-size: calc(var(--cell-size) * 3);
+    --end-grid-reducer: 3rem;
+    --card-sizing: 1rem;
+    --card-min-width: 2rem;
+    --card-border-radius: 1rem;
+    --card-first-color: rgb(49, 180, 177) 0%;
+    --card-second-color: rgba(9, 121, 108, 0.68) 35%;
+    --button-border-radius: 1rem;
+    --font-family-alt: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+        sans-serif;
+}
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #e5e5f7;
+    opacity: 1;
+    background-image: linear-gradient(
+            30deg,
+            #5fb9b9 12%,
+            transparent 12.5%,
+            transparent 87%,
+            #5fb9b9 87.5%,
+            #5fb9b9
+        ),
+        linear-gradient(
+            150deg,
+            #5fb9b9 12%,
+            transparent 12.5%,
+            transparent 87%,
+            #5fb9b9 87.5%,
+            #5fb9b9
+        ),
+        linear-gradient(
+            30deg,
+            #5fb9b9 12%,
+            transparent 12.5%,
+            transparent 87%,
+            #5fb9b9 87.5%,
+            #5fb9b9
+        ),
+        linear-gradient(
+            150deg,
+            #5fb9b9 12%,
+            transparent 12.5%,
+            transparent 87%,
+            #5fb9b9 87.5%,
+            #5fb9b9
+        ),
+        linear-gradient(
+            60deg,
+            #5fb9b977 25%,
+            transparent 25.5%,
+            transparent 75%,
+            #5fb9b977 75%,
+            #5fb9b977
+        ),
+        linear-gradient(
+            60deg,
+            #5fb9b977 25%,
+            transparent 25.5%,
+            transparent 75%,
+            #5fb9b977 75%,
+            #5fb9b977
+        );
+    background-size: 80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
+
+hr {
+    border: 1px solid black;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+section.prepare-game > form.player-form,
+section.message-board {
+    border: 1px black solid;
+    border-radius: var(--card-border-radius);
+    margin: var(--card-sizing);
+    padding: var(--card-sizing);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: linear-gradient(
+        117deg,
+        var(--card-first-color),
+        var(--card-second-color)
+    );
+}
+
+form.player-form > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    align-items: center;
+
+    border: var(--border-size-thick) black outset;
+    border-radius: var(--card-border-radius);
+    margin: var(--card-sizing);
+    padding: var(--card-sizing);
+}
+form.player-form > div > input {
+    border: var(--border-size) solid black;
+    border-radius: 0.25rem;
+    height: 3rem;
+    background-color: inherit;
+    justify-items: center;
+    font-family: var(--font-family-alt);
+    font-weight: bold;
+}
+form.player-form > button.set-players {
+    border-radius: var(--button-border-radius);
+    width: var(--button-width);
+    height: calc(var(--button-width) / 2);
+    font-weight: bold;
+    background-color: inherit;
+    border-style: solid;
 }
 .game-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: var(--grid-size);
     height: var(--grid-size);
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 .game-grid > div {
     width: var(--cell-size);
     height: var(--cell-size);
-    background-color: green;
-    border: black solid var(--border-size);
+    background-color: rgba(9, 121, 108, 0.68);
+    border: var(--border-size-thick) black outset;
+    border-radius: var(--card-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-style: var(--font-family-alt);
+}
+section.end-game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+section.end-game .game-grid {
+    width: calc(var(--grid-size) / var(--end-grid-reducer));
+    height: calc(var(--grid-size) / var(--end-grid-reducer));
+}
+section.end-game .game-grid > div {
+    width: calc(var(--cell-size) - var(--end-grid-reducer));
+    height: calc(var(--cell-size) - var(--end-grid-reducer));
+}
+button.start-game {
+    border-radius: var(--button-border-radius);
+    font-weight: bold;
+    background-color: inherit;
+    width: var(--start-game-button-width);
+    height: calc(var(--start-game-button-width) / 2);
+    border-style: solid;
+    margin-top: 7rem;
+}
+section.message-board {
+    background: var(--card-second-color);
+    font-family: var(--font-family-alt);
+    white-space: pre-line;
 }
 section.message-board > p {
-    white-space: pre-line;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media only screen and (min-width: 1000px) {
+    section.prepare-game > form.player-form {
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    button.set-players {
+        grid-column: 1/3;
+    }
 }
