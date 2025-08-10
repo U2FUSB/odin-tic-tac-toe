@@ -94,10 +94,10 @@ const Display = (function () {
         element.dataset.cell = index;
     });
     // So I don't have to set the players every time
-    // player1NameInput.value = "Josh";
-    // player1MarkInput.value = "X";
-    // player2NameInput.value = "Jannice";
-    // player2MarkInput.value = "Y";
+    player1NameInput.value = "Josh";
+    player1MarkInput.value = "X";
+    player2NameInput.value = "Jannice";
+    player2MarkInput.value = "Y";
 
     const setPage = (function () {
         return {
