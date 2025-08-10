@@ -79,6 +79,9 @@ const Display = (function () {
     const prepareGameSection = document.querySelector("section.prepare-game");
     const playGameSection = document.querySelector("section.play-game");
     const endGameSection = document.querySelector("section.end-game");
+    const messageBoardSection = document.querySelector("section.message-board");
+    const messageBoardParagraph = messageBoardSection.querySelector("p");
+    const lineBreak = document.createElement("br");
     const playerForm = document.querySelector("form.player-form");
     const player1NameInput = document.querySelector("#player1-name");
     const player1MarkInput = document.querySelector("#player1-mark");
@@ -102,16 +105,19 @@ const Display = (function () {
             prepareGame: function () {
                 body.innerHTML = "";
                 body.appendChild(prepareGameSection);
+                body.appendChild(messageBoardSection);
             },
             playGame: function () {
                 body.innerHTML = "";
                 body.appendChild(playGameSection);
+                body.appendChild(messageBoardSection);
             },
             endGame: function () {
                 body.innerHTML = "";
                 body.appendChild(endGameSection);
                 endGameGrid.innerHTML = "";
                 endGameGrid.appendChild(gameGrid.cloneNode(true));
+                body.appendChild(messageBoardSection);
             },
         };
     })();
@@ -136,16 +142,17 @@ const Display = (function () {
         console.log(Gameboard.getBoard().slice(6, 9));
         console.log("");
 
+        messageBoardParagraph.textContent = "";
         gameGridArray.forEach((element) => {
             element.textContent = Gameboard.getBoard()[element.dataset.cell];
         });
     }
-
     function getCellFromEvent(event) {
         return event.target.dataset.cell;
     }
     function printMessage(message) {
         console.log(message);
+        messageBoardParagraph.textContent += `${message}\r\n`;
     }
     return {
         printGameboard,
@@ -181,6 +188,9 @@ const Gameflow = (function () {
         currentPlayer = notCurrentPlayer;
         notCurrentPlayer = buffer;
     }
+    function randomizePlayerOrder() {
+        return [player1, player2].sort(() => Math.floor(Math.random() - 0.5));
+    }
     function preparePlayers(
         player1Name,
         player1Mark,
@@ -210,8 +220,9 @@ const Gameflow = (function () {
         }
     }
     function prepareGame() {
-        currentPlayer = player1;
-        notCurrentPlayer = player2;
+        const [firstPlayer, lastPlayer] = randomizePlayerOrder();
+        currentPlayer = firstPlayer;
+        notCurrentPlayer = lastPlayer;
         Gameboard.resetBoard();
         Display.printGameboard();
         Display.setPage.playGame();

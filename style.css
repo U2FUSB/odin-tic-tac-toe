@@ -15,3 +15,6 @@
     background-color: green;
     border: black solid var(--border-size);
 }
+section.message-board > p {
+    white-space: pre-line;
+}
