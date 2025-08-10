@@ -81,7 +81,6 @@ const Display = (function () {
     const endGameSection = document.querySelector("section.end-game");
     const messageBoardSection = document.querySelector("section.message-board");
     const messageBoardParagraph = messageBoardSection.querySelector("p");
-    const lineBreak = document.createElement("br");
     const playerForm = document.querySelector("form.player-form");
     const player1NameInput = document.querySelector("#player1-name");
     const player1MarkInput = document.querySelector("#player1-mark");
@@ -95,10 +94,10 @@ const Display = (function () {
         element.dataset.cell = index;
     });
     // So I don't have to set the players every time
-    player1NameInput.value = "Josh";
-    player1MarkInput.value = "X";
-    player2NameInput.value = "Jannice";
-    player2MarkInput.value = "Y";
+    // player1NameInput.value = "Josh";
+    // player1MarkInput.value = "X";
+    // player2NameInput.value = "Jannice";
+    // player2MarkInput.value = "Y";
 
     const setPage = (function () {
         return {
