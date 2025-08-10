@@ -75,6 +75,10 @@ const Gameboard = (function () {
 })();
 
 const Display = (function () {
+    const body = document.querySelector("body");
+    const prepareGameSection = document.querySelector("section.prepare-game");
+    const playGameSection = document.querySelector("section.play-game");
+    const endGameSection = document.querySelector("section.end-game");
     const playerForm = document.querySelector("form.player-form");
     const player1NameInput = document.querySelector("#player1-name");
     const player1MarkInput = document.querySelector("#player1-mark");
@@ -90,9 +94,26 @@ const Display = (function () {
     // So I don't have to set the players every time
     player1NameInput.value = "Josh";
     player1MarkInput.value = "X";
-    player2NameInput.value = "Janniece";
+    player2NameInput.value = "Jannice";
     player2MarkInput.value = "Y";
-    
+
+    const setPage = (function () {
+        return {
+            prepareGame: function () {
+                body.innerHTML = "";
+                body.appendChild(prepareGameSection);
+            },
+            playGame: function () {
+                body.innerHTML = "";
+                body.appendChild(playGameSection);
+            },
+            endGame: function () {
+                body.innerHTML = "";
+                body.appendChild(endGameSection);
+            },
+        };
+    })();
+
     function prepareEventListeners(params) {
         playerForm.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -124,6 +145,7 @@ const Display = (function () {
         getCellFromEvent,
         printMessage,
         prepareEventListeners,
+        setPage,
     };
 })();
 
