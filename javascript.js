@@ -114,7 +114,7 @@ const Display = (function () {
         };
     })();
 
-    function prepareEventListeners(params) {
+    function prepareEventListeners() {
         playerForm.addEventListener("submit", (event) => {
             event.preventDefault();
             Gameflow.preparePlayers(
@@ -124,8 +124,8 @@ const Display = (function () {
                 player2MarkInput.value
             );
         });
-        startGameButton.addEventListener("click", Gameflow.prepareGame);
         gameGrid.addEventListener("click", Gameflow.playRound);
+        startGameButton.addEventListener("click", Gameflow.prepareGame);
     }
     function printGameboard() {
         console.clear();
@@ -199,12 +199,14 @@ const Gameflow = (function () {
             Display.printMessage(
                 `Players "${player1.getName()}" and "${player2.getName()}" are created`
             );
+            prepareGame();
         }
     }
     function prepareGame() {
         currentPlayer = player1;
         notCurrentPlayer = player2;
         Gameboard.resetBoard();
+        Display.setPage.playGame();
         Display.printMessage(`${currentPlayer.getName()}, make your choice`);
     }
     function playRound(event) {
@@ -222,7 +224,7 @@ const Gameflow = (function () {
             if (gamestate[1] === 0) {
                 Display.printGameboard();
                 Display.printMessage(
-                    `${currentPlayer.getName()}, it's you turn now. Make your choice`
+                    `${currentPlayer.getName()}, it's your turn now. Make your choice`
                 );
             }
             if (gamestate[1] === 1) {
@@ -237,6 +239,7 @@ const Gameflow = (function () {
                 Display.printMessage(
                     `${player2.getName()}: ${player2.getWins()} Points`
                 );
+                Display.setPage.endGame();
             }
             if (gamestate[1] === 2) {
                 Display.printGameboard();
@@ -247,6 +250,7 @@ const Gameflow = (function () {
                 Display.printMessage(
                     `${player2.getName()}: ${player2.getWins()} Points`
                 );
+                Display.setPage.endGame();
             }
         }
     }
@@ -262,3 +266,4 @@ const Gameflow = (function () {
     return { preparePlayers, playRound, prepareGame };
 })();
 Display.prepareEventListeners();
+Display.setPage.prepareGame();
