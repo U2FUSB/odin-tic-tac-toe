@@ -86,11 +86,11 @@ const Display = (function () {
     const player2MarkInput = document.querySelector("#player2-mark");
     const startGameButton = document.querySelector("button.start-game");
     const gameGrid = document.querySelector(".game-grid");
-
-    Array.from(gameGrid.children).forEach((element, index) => {
+    const endGameGrid = document.querySelector(".end-game-grid");
+    const gameGridArray = Array.from(gameGrid.children);
+    gameGridArray.forEach((element, index) => {
         element.dataset.cell = index;
     });
-
     // So I don't have to set the players every time
     player1NameInput.value = "Josh";
     player1MarkInput.value = "X";
@@ -110,6 +110,8 @@ const Display = (function () {
             endGame: function () {
                 body.innerHTML = "";
                 body.appendChild(endGameSection);
+                endGameGrid.innerHTML = "";
+                endGameGrid.appendChild(gameGrid.cloneNode(true));
             },
         };
     })();
@@ -133,7 +135,12 @@ const Display = (function () {
         console.log(Gameboard.getBoard().slice(3, 6));
         console.log(Gameboard.getBoard().slice(6, 9));
         console.log("");
+
+        gameGridArray.forEach((element) => {
+            element.textContent = Gameboard.getBoard()[element.dataset.cell];
+        });
     }
+
     function getCellFromEvent(event) {
         return event.target.dataset.cell;
     }
@@ -206,6 +213,7 @@ const Gameflow = (function () {
         currentPlayer = player1;
         notCurrentPlayer = player2;
         Gameboard.resetBoard();
+        Display.printGameboard();
         Display.setPage.playGame();
         Display.printMessage(`${currentPlayer.getName()}, make your choice`);
     }
@@ -221,15 +229,15 @@ const Gameflow = (function () {
             Gameboard.setCell(chosenCell, currentPlayer.getMark());
             const gamestate = getGameState();
             changeCurrentPlayer();
+            Display.printGameboard();
             if (gamestate[1] === 0) {
-                Display.printGameboard();
                 Display.printMessage(
                     `${currentPlayer.getName()}, it's your turn now. Make your choice`
                 );
             }
             if (gamestate[1] === 1) {
+                Display.setPage.endGame();
                 notCurrentPlayer.increaseWins();
-                Display.printGameboard();
                 Display.printMessage(
                     `${notCurrentPlayer.getName()} wins this round`
                 );
@@ -239,10 +247,9 @@ const Gameflow = (function () {
                 Display.printMessage(
                     `${player2.getName()}: ${player2.getWins()} Points`
                 );
-                Display.setPage.endGame();
             }
             if (gamestate[1] === 2) {
-                Display.printGameboard();
+                Display.setPage.endGame();
                 Display.printMessage("This round is a stalemate");
                 Display.printMessage(
                     `${player1.getName()}: ${player1.getWins()} Points`
@@ -250,7 +257,6 @@ const Gameflow = (function () {
                 Display.printMessage(
                     `${player2.getName()}: ${player2.getWins()} Points`
                 );
-                Display.setPage.endGame();
             }
         }
     }
